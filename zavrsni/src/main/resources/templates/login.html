@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Prijava</title>
+</head>
+<body>
+
+    <h1>Prijava</h1>
+
+    <p th:if="${param.error}" style="color: red;">Pogresan email ili lozinka.</p>
+    <p th:if="${param.logout}" style="color: green;">Uspjesno si se odjavio/la.</p>
+
+    <form method="post" th:action="@{/login}">
+
+        <label>
+            Email:
+            <input type="email" name="username" required>
+        </label>
+        <br>
+
+        <label>
+            Lozinka:
+            <input type="password" name="password" required>
+        </label>
+        <br>
+
+        <button type="submit">Prijavi se</button>
+    </form>
+
+    <br>
+    <a href="/registracija">Nemas racun? Registriraj se</a>
+
+</body>
+</html>

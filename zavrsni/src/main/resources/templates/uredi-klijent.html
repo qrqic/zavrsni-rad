@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Uredi klijenta</title>
+</head>
+<body>
+
+    <h1>Uredi klijenta</h1>
+
+    <form method="post" th:action="@{/klijenti/{id}(id=${klijent.id})}">
+
+        <label>
+            Naziv:
+            <input type="text" name="naziv" th:value="${klijent.naziv}" required>
+        </label>
+        <br>
+
+        <label>
+            Email:
+            <input type="email" name="email" th:value="${klijent.email}" required>
+        </label>
+        <br>
+
+        <button type="submit">Spremi izmjene</button>
+    </form>
+
+    <br>
+    <a href="/klijenti">Nazad na popis</a>
+
+</body>
+</html>

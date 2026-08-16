@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registracija</title>
+</head>
+<body>
+
+    <h1>Registracija novog korisnika</h1>
+
+    <form method="post" th:action="@{/registracija}">
+
+        <label>
+            Ime:
+            <input type="text" name="ime" required>
+        </label>
+        <br>
+
+        <label>
+            Prezime:
+            <input type="text" name="prezime" required>
+        </label>
+        <br>
+
+        <label>
+            Email:
+            <input type="email" name="email" required>
+        </label>
+        <br>
+
+        <label>
+            Lozinka:
+            <input type="password" name="lozinka" required>
+        </label>
+        <br>
+
+        <button type="submit">Registriraj se</button>
+    </form>
+
+    <br>
+    <a href="/login">Vec imas racun? Prijavi se</a>
+
+</body>
+</html>

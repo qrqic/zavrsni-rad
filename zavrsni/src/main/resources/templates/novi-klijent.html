@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Novi klijent</title>
+</head>
+<body>
+
+    <h1>Dodaj novog klijenta</h1>
+
+    <!-- th:action (umjesto obicnog action) je bitan otkad imamo Spring Security -
+         on automatski ubaci skriveni CSRF token u formu, bez njega bi POST pao s 403 -->
+    <form method="post" th:action="@{/klijenti}">
+
+        <label>
+            Naziv:
+            <input type="text" name="naziv" required>
+        </label>
+        <br>
+
+        <label>
+            Email:
+            <input type="email" name="email" required>
+        </label>
+        <br>
+        <button type="submit">Spremi</button>
+    </form>
+
+    <br>
+    <a href="/klijenti">Nazad na popis</a>
+
+</body>
+</html>

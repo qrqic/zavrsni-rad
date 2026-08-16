@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Popis klijenata</title>
+</head>
+<body>
+
+    <h1>Popis klijenata</h1>
+
+    <a href="/klijenti/novi">Dodaj klijenta</a>
+
+    &nbsp;|&nbsp;
+
+    <form th:action="@{/logout}" method="post" style="display:inline">
+        <button type="submit">Odjava</button>
+    </form>
+
+    <p th:if="${klijenti.isEmpty()}">Nema unesenih klijenata.</p>
+
+    <table border="1" cellpadding="6">
+        <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Email</th>
+            <th>Akcije</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="klijent : ${klijenti}">
+            <td th:text="${klijent.naziv}">Ime klijenta ide ovdje</td>
+            <td th:text="${klijent.email}">Email ide ovdje</td>
+            <td>
+
+                <a th:href="@{/klijenti/{id}/uredi(id=${klijent.id})}">Uredi</a>
+
+                &nbsp;
+
+                <form th:action="@{/klijenti/{id}/obrisi(id=${klijent.id})}" method="post"
+                      style="display:inline"
+                      onsubmit="return confirm('Sigurno obrisati ovog klijenta?');">
+                    <button type="submit">Obriši</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
