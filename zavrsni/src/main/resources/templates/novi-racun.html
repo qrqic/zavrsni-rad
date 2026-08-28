@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Novi račun</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="stranica">
+    <main>
+        <div class="kartica siroka">
+            <h1>Izdaj novi račun</h1>
+
+            <form method="post" th:action="@{/racuni}" id="forma-racuna">
+
+                <label class="polje">
+                    <span>Klijent</span>
+                    <select name="klijentId" required>
+                        <option th:each="k : ${klijenti}" th:value="${k.id}" th:text="${k.naziv}"></option>
+                    </select>
+                </label>
+
+                <label class="polje">
+                    <span>Datum izdavanja</span>
+                    <input type="date" name="datumIzdavanja" th:value="${danas}" required>
+                </label>
+
+                <label class="polje">
+                    <span>Datum dospijeća</span>
+                    <input type="date" name="datumDospijeca" required>
+                </label>
+
+                <h2>Stavke računa</h2>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Opis</th>
+                        <th>Količina</th>
+                        <th>Jed. cijena (€)</th>
+                        <th>PDV (%)</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tijelo-stavki">
+                    <tr class="redak-stavke">
+                        <td><input type="text" name="opis" required></td>
+                        <td><input type="number" name="kolicina" step="0.01" min="0.01" value="1" required></td>
+                        <td><input type="number" name="jedinicnaCijena" step="0.01" min="0" required></td>
+                        <td><input type="number" name="pdvStopa" step="0.01" min="0" max="100" value="25" required></td>
+                        <td><button type="button" class="gumb sekundarni ukloni-stavku">Ukloni</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <button type="button" id="dodaj-stavku" class="gumb sekundarni" style="margin-top: 12px;">Dodaj stavku</button>
+
+                <label class="polje" style="margin-top: 24px;">
+                    <span>Napomena</span>
+                    <textarea name="napomena"></textarea>
+                </label>
+
+                <button type="submit" class="gumb" style="margin-top: 12px;">Izdaj račun</button>
+            </form>
+
+            <a class="poveznica" href="/racuni">Nazad na popis</a>
+        </div>
+    </main>
+</div>
+
+<script>
+    (function () {
+        var tijelo = document.getElementById('tijelo-stavki');
+
+        document.getElementById('dodaj-stavku').addEventListener('click', function () {
+            var noviRedak = tijelo.querySelector('.redak-stavke').cloneNode(true);
+            noviRedak.querySelectorAll('input').forEach(function (polje) {
+                if (polje.name === 'pdvStopa') {
+                    polje.value = '25';
+                } else if (polje.name === 'kolicina') {
+                    polje.value = '1';
+                } else {
+                    polje.value = '';
+                }
+            });
+            tijelo.appendChild(noviRedak);
+        });
+
+        tijelo.addEventListener('click', function (dogadaj) {
+            if (dogadaj.target.classList.contains('ukloni-stavku')
+                    && tijelo.querySelectorAll('.redak-stavke').length > 1) {
+                dogadaj.target.closest('.redak-stavke').remove();
+            }
+        });
+    })();
+</script>
+</body>
+</html>

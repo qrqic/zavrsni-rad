@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pregled računa</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="stranica">
+    <main>
+        <div class="kartica siroka">
+
+            <div class="zaglavlje-pregleda">
+                <div>
+                    <h1 th:text="'Račun br. ' + ${racun.brojRacuna}">Račun br. 2026-0001</h1>
+                    <span th:switch="${racun.status.name()}">
+                        <span th:case="'PLACEN'" class="status-znacka placeno">Plaćeno</span>
+                        <span th:case="'STORNIRAN'" class="status-znacka stornirano">Stornirano</span>
+                        <span th:case="*" class="status-znacka neplaceno">Neplaćeno</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="detalji">
+                <div class="redak-detalj">
+                    <span class="oznaka">Klijent</span>
+                    <span class="vrijednost" th:text="${racun.klijent.naziv}">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">OIB klijenta</span>
+                    <span class="vrijednost" th:text="${racun.klijent.oib}">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">Datum izdavanja</span>
+                    <span class="vrijednost" th:text="${#temporals.format(racun.datumIzdavanja, 'dd.MM.yyyy')}">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">Datum dospijeća</span>
+                    <span class="vrijednost" th:text="${#temporals.format(racun.datumDospijeca, 'dd.MM.yyyy')}">-</span>
+                </div>
+                <div class="redak-detalj" th:if="${racun.napomena != null and !racun.napomena.isEmpty()}">
+                    <span class="oznaka">Napomena</span>
+                    <span class="vrijednost" th:text="${racun.napomena}">-</span>
+                </div>
+            </div>
+
+            <h2>Stavke</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Opis</th>
+                    <th>Količina</th>
+                    <th>Jed. cijena</th>
+                    <th>PDV</th>
+                    <th>Iznos</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="stavka : ${racun.stavke}">
+                    <td th:text="${stavka.opis}">Opis</td>
+                    <td th:text="${stavka.kolicina}">1</td>
+                    <td th:text="${stavka.jedinicnaCijena} + ' €'">0,00 €</td>
+                    <td th:text="${stavka.pdvStopa} + ' %'">25 %</td>
+                    <td th:text="${stavka.iznos} + ' €'">0,00 €</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="redak-detalj" style="margin-top: 12px; font-weight: 700; border-bottom: none;">
+                <span class="oznaka">Ukupno za platiti</span>
+                <span class="vrijednost" th:text="${racun.ukupanIznos} + ' €'">0,00 €</span>
+            </div>
+
+            <p class="prazno" th:if="${racun.status.name() == 'STORNIRAN'}">
+                Ovaj je račun storniran i više se ne može mijenjati.
+            </p>
+
+            <div class="trak-akcija" style="margin-top: 24px; margin-bottom: 0;">
+                <a class="poveznica" style="margin-top: 0;" href="/racuni">Nazad na popis</a>
+                <div style="display: flex; gap: 10px;" th:if="${racun.status.name() != 'STORNIRAN'}">
+                    <form th:action="@{/racuni/{id}/status(id=${racun.id})}" method="post">
+                        <button type="submit" class="gumb sekundarni"
+                                th:text="${racun.status.name() == 'PLACEN'} ? 'Označi kao neplaćeno' : 'Označi kao plaćeno'">
+                            Promijeni status
+                        </button>
+                    </form>
+                    <form th:action="@{/racuni/{id}/storniraj(id=${racun.id})}" method="post"
+                          onsubmit="return confirm('Sigurno stornirati ovaj račun? Ova se radnja ne može poništiti.');">
+                        <button type="submit" class="gumb opasnost">Storniraj</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

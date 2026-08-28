@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pregled klijenta</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="stranica">
+    <main>
+        <div class="kartica siroka">
+
+            <div class="zaglavlje-pregleda">
+                <div>
+                    <h1 th:text="${klijent.naziv}">Naziv klijenta</h1>
+                    <span class="znacka" th:text="${klijent.tip.name() == 'FIZICKA_OSOBA'} ? 'Fizička osoba' : 'Pravna osoba'">Tip</span>
+                </div>
+            </div>
+
+            <div class="detalji">
+                <div class="redak-detalj">
+                    <span class="oznaka">OIB</span>
+                    <span class="vrijednost" th:text="${klijent.oib}">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">Adresa</span>
+                    <span class="vrijednost" th:text="${klijent.adresa}">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">Mjesto</span>
+                    <span class="vrijednost" th:text="${klijent.mjesto}">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">Poštanski broj</span>
+                    <span class="vrijednost" th:text="${klijent.postanskiBroj}">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">Email</span>
+                    <span class="vrijednost" th:text="${klijent.email}">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">Telefon</span>
+                    <span class="vrijednost" th:text="${klijent.telefon}">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">Napomena</span>
+                    <span class="vrijednost" th:text="${klijent.napomena != null and !klijent.napomena.isEmpty()} ? ${klijent.napomena} : '-'">-</span>
+                </div>
+                <div class="redak-detalj">
+                    <span class="oznaka">Klijent od</span>
+                    <span class="vrijednost" th:text="${klijent.datumKreiranja != null} ? ${#temporals.format(klijent.datumKreiranja, 'dd.MM.yyyy HH:mm')} : '-'">-</span>
+                </div>
+            </div>
+
+            <h2>Računi</h2>
+
+            <p class="prazno" th:if="${racuni.isEmpty()}">Ovaj klijent još nema izdanih računa.</p>
+
+            <table th:unless="${racuni.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Broj računa</th>
+                    <th>Datum izdavanja</th>
+                    <th>Dospijeće</th>
+                    <th>Status</th>
+                    <th>Iznos</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="racun : ${racuni}"
+                    class="red-klijenta"
+                    th:onclick="'window.location=\'' + @{/racuni/{id}(id=${racun.id})} + '\''">
+                    <td class="ime-klijenta" th:text="${racun.brojRacuna}">Broj</td>
+                    <td th:text="${#temporals.format(racun.datumIzdavanja, 'dd.MM.yyyy')}">Datum</td>
+                    <td th:text="${#temporals.format(racun.datumDospijeca, 'dd.MM.yyyy')}">Dospijeće</td>
+                    <td>
+                        <span th:switch="${racun.status.name()}">
+                            <span th:case="'PLACEN'" class="status-znacka placeno">Plaćeno</span>
+                            <span th:case="'STORNIRAN'" class="status-znacka stornirano">Stornirano</span>
+                            <span th:case="*" class="status-znacka neplaceno">Neplaćeno</span>
+                        </span>
+                    </td>
+                    <td th:text="${racun.ukupanIznos} + ' €'">Iznos</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="trak-akcija" style="margin-top: 24px; margin-bottom: 0;">
+                <a class="poveznica" style="margin-top: 0;" href="/klijenti">Nazad na popis</a>
+                <div style="display: flex; gap: 10px;">
+                    <a th:href="@{/klijenti/{id}/uredi(id=${klijent.id})}" class="gumb sekundarni">Uredi podatke</a>
+                    <form th:action="@{/klijenti/{id}/obrisi(id=${klijent.id})}" method="post"
+                          onsubmit="return confirm('Sigurno obrisati ovog klijenta?');">
+                        <button type="submit" class="gumb opasnost">Obriši</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Popis računa</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="stranica">
+    <div class="topbar">
+        <h1>Evidencija klijenata i faktura</h1>
+        <nav class="nav-glavni">
+            <a href="/klijenti">Klijenti</a>
+            <a href="/racuni">Računi</a>
+            <a href="/izvjestaji">Izvještaji</a>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit">Odjava</button>
+            </form>
+        </nav>
+    </div>
+
+    <main>
+        <div class="kartica siroka">
+
+            <h2 style="margin-top: 0;">Popis računa</h2>
+
+            <div class="trak-akcija">
+                <a href="/racuni/novi" class="gumb">Novi račun</a>
+            </div>
+
+            <form method="get" th:action="@{/racuni}" class="traka-pretrage">
+                <div class="panel-filtera otvoren">
+                    <label class="polje">
+                        <span>Klijent</span>
+                        <select name="klijentId">
+                            <option value="">Svi klijenti</option>
+                            <option th:each="k : ${klijenti}" th:value="${k.id}" th:text="${k.naziv}"
+                                    th:selected="${klijentId != null and klijentId == k.id}"></option>
+                        </select>
+                    </label>
+
+                    <label class="polje">
+                        <span>Status</span>
+                        <select name="status">
+                            <option value="">Svi</option>
+                            <option value="NEPLACEN" th:selected="${status == 'NEPLACEN'}">Neplaćeno</option>
+                            <option value="PLACEN" th:selected="${status == 'PLACEN'}">Plaćeno</option>
+                            <option value="STORNIRAN" th:selected="${status == 'STORNIRAN'}">Stornirano</option>
+                        </select>
+                    </label>
+
+                    <label class="polje">
+                        <span>Datum izdavanja od</span>
+                        <input type="date" name="datumOd" th:value="${datumOd}">
+                    </label>
+
+                    <label class="polje">
+                        <span>Datum izdavanja do</span>
+                        <input type="date" name="datumDo" th:value="${datumDo}">
+                    </label>
+
+                    <div class="polje polje-akcije-filtera">
+                        <button type="submit" class="gumb">Filtriraj</button>
+                        <a href="/racuni" class="gumb sekundarni">Poništi</a>
+                    </div>
+                </div>
+            </form>
+
+            <p class="prazno" th:if="${racuni.isEmpty()}">Nema računa koji odgovaraju filteru.</p>
+
+            <table th:unless="${racuni.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Broj računa</th>
+                    <th>Klijent</th>
+                    <th>Datum izdavanja</th>
+                    <th>Dospijeće</th>
+                    <th>Status</th>
+                    <th>Iznos</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="racun : ${racuni}"
+                    class="red-klijenta"
+                    th:onclick="'window.location=\'' + @{/racuni/{id}(id=${racun.id})} + '\''">
+                    <td class="ime-klijenta" th:text="${racun.brojRacuna}">Broj</td>
+                    <td th:text="${racun.klijent.naziv}">Klijent</td>
+                    <td th:text="${#temporals.format(racun.datumIzdavanja, 'dd.MM.yyyy')}">Datum</td>
+                    <td th:text="${#temporals.format(racun.datumDospijeca, 'dd.MM.yyyy')}">Dospijeće</td>
+                    <td>
+                        <span th:switch="${racun.status.name()}">
+                            <span th:case="'PLACEN'" class="status-znacka placeno">Plaćeno</span>
+                            <span th:case="'STORNIRAN'" class="status-znacka stornirano">Stornirano</span>
+                            <span th:case="*" class="status-znacka neplaceno">Neplaćeno</span>
+                        </span>
+                    </td>
+                    <td th:text="${racun.ukupanIznos} + ' €'">Iznos</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

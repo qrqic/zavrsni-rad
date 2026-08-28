@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Greška</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="stranica">
+    <main>
+        <div class="kartica">
+            <h1>Ups, nešto nije u redu</h1>
+            <p class="poruka greska" th:text="${poruka}">Došlo je do greške.</p>
+            <a class="poveznica" href="/klijenti">Natrag na početnu</a>
+        </div>
+    </main>
+</div>
+</body>
+</html>
