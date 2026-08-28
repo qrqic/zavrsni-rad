@@ -42,8 +42,6 @@ public class Racun {
     private LocalDate datumIzdavanja;
     private LocalDate datumDospijeca;
 
-    // columnDefinition tjera Hibernate da napravi obični VARCHAR umjesto MySQL native ENUM stupca -
-    // native ENUM bi se morao ručno mijenjati (ALTER TABLE) svaki put kad se doda nova vrijednost u StatusRacuna.
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(20)")
     private StatusRacuna status;

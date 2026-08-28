@@ -59,7 +59,6 @@ public class IzvjestajKontroler {
         Tvrtka tvrtka = dohvatiTvrtkuPrijavljenogKorisnika(authentication);
         List<Racun> racuni = dohvatiFiltriraneRacune(tvrtka, klijentId, status, datumOd, datumDo);
 
-        // Stornirani računi se prikazuju u popisu (radi povijesti), ali se ne računaju kao ostvareni prihod.
         BigDecimal ukupno = racuni.stream()
                 .filter(racun -> racun.getStatus() != StatusRacuna.STORNIRAN)
                 .map(Racun::getUkupanIznos)
@@ -110,8 +109,6 @@ public class IzvjestajKontroler {
                 .body(sadrzaj);
     }
 
-    // Excel u hrvatskoj lokalizaciji tumači zarez kao decimalni separator, ne kao razdjelnik stupaca,
-    // pa se CSV izvozi s ";" kao razdjelnikom i "," kao decimalnim zarezom da se ispravno prikaže u stupcima.
     private String izgradiCsv(List<Racun> racuni, LocalDate datumOd, LocalDate datumDo) {
         DateTimeFormatter formatDatuma = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         BigDecimal ukupno = racuni.stream()

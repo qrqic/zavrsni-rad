@@ -187,8 +187,6 @@ public class RacunKontroler {
         return "redirect:/racuni/" + id;
     }
 
-    // Izdan račun se ne briše iz baze (time bi se izgubila povijest izdanih dokumenata),
-    // nego se trajno označi kao storniran - isključen je iz izvještaja o prihodu, ali ostaje vidljiv.
     @PostMapping("/racuni/{id}/storniraj")
     public String stornirajRacun(@PathVariable Long id, Authentication authentication) {
 

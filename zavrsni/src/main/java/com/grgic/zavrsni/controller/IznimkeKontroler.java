@@ -12,8 +12,6 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 
 import java.util.stream.Collectors;
 
-// Hvata sve neuhvaćene iznimke iz kontrolera i umjesto zadane Whitelabel error stranice
-// prikazuje korisniku razumljivu poruku na stranici greska.html.
 @ControllerAdvice
 public class IznimkeKontroler {
 
@@ -41,8 +39,6 @@ public class IznimkeKontroler {
         return "greska";
     }
 
-    // Spring MVC od verzije 6.1 validaciju @RequestParam vrijednosti na kontroleru prijavljuje
-    // kroz ovu iznimku umjesto kroz jakarta.validation.ConstraintViolationException.
     @ExceptionHandler(HandlerMethodValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String obradiPogresneParametreMetode(HandlerMethodValidationException e, Model model) {
