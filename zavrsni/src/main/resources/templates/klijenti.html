@@ -3,48 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <title>Popis klijenata</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="stranica">
+    <div class="topbar">
+        <h1>Evidencija klijenata i faktura</h1>
+        <nav class="nav-glavni">
+            <a href="/klijenti">Klijenti</a>
+            <a href="/racuni">Računi</a>
+            <a href="/izvjestaji">Izvještaji</a>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit">Odjava</button>
+            </form>
+        </nav>
+    </div>
 
-    <h1>Popis klijenata</h1>
+    <main>
+        <div class="kartica siroka">
 
-    <a href="/klijenti/novi">Dodaj klijenta</a>
+            <h2 style="margin-top: 0;">Popis klijenata</h2>
 
-    &nbsp;|&nbsp;
+            <div class="trak-akcija">
+                <a href="/klijenti/novi" class="gumb">Dodaj klijenta</a>
+            </div>
 
-    <form th:action="@{/logout}" method="post" style="display:inline">
-        <button type="submit">Odjava</button>
-    </form>
+            <form method="get" th:action="@{/klijenti}" class="traka-pretrage" id="forma-filtera">
+                <div class="red-pretrage">
+                    <label class="polje polje-pretraga">
+                        <span class="sr-only">Pretraga</span>
+                        <input type="text" name="pretraga" th:value="${pretraga}" autocomplete="off"
+                               placeholder="Pretraži klijente (naziv, OIB, mjesto, email, telefon...)">
+                    </label>
+                    <button type="button" id="gumb-filteri" class="gumb sekundarni">Filteri</button>
+                </div>
 
-    <p th:if="${klijenti.isEmpty()}">Nema unesenih klijenata.</p>
+                <div id="panel-filtera" class="panel-filtera">
+                    <label class="polje">
+                        <span>Datum kreiranja od</span>
+                        <input type="date" name="datumOd" th:value="${datumOd}">
+                    </label>
 
-    <table border="1" cellpadding="6">
-        <thead>
-        <tr>
-            <th>Naziv</th>
-            <th>Email</th>
-            <th>Akcije</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="klijent : ${klijenti}">
-            <td th:text="${klijent.naziv}">Ime klijenta ide ovdje</td>
-            <td th:text="${klijent.email}">Email ide ovdje</td>
-            <td>
+                    <label class="polje">
+                        <span>Datum kreiranja do</span>
+                        <input type="date" name="datumDo" th:value="${datumDo}">
+                    </label>
 
-                <a th:href="@{/klijenti/{id}/uredi(id=${klijent.id})}">Uredi</a>
+                    <label class="polje">
+                        <span>Sortiraj</span>
+                        <select name="sortiranje">
+                            <option value="naziv_asc" th:selected="${sortiranje == 'naziv_asc'}">Naziv (A-Z)</option>
+                            <option value="naziv_desc" th:selected="${sortiranje == 'naziv_desc'}">Naziv (Z-A)</option>
+                            <option value="datum_desc" th:selected="${sortiranje == 'datum_desc'}">Datum kreiranja (najnoviji prvo)</option>
+                            <option value="datum_asc" th:selected="${sortiranje == 'datum_asc'}">Datum kreiranja (najstariji prvo)</option>
+                        </select>
+                    </label>
 
-                &nbsp;
+                    <div class="polje polje-akcije-filtera">
+                        <a href="/klijenti" class="gumb sekundarni">Poništi filtere</a>
+                    </div>
+                </div>
+            </form>
 
-                <form th:action="@{/klijenti/{id}/obrisi(id=${klijent.id})}" method="post"
-                      style="display:inline"
-                      onsubmit="return confirm('Sigurno obrisati ovog klijenta?');">
-                    <button type="submit">Obriši</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            <div id="rezultati-klijenata" th:fragment="rezultati">
+                <p class="prazno" th:if="${klijenti.isEmpty()}">Nema klijenata koji odgovaraju pretrazi.</p>
 
+                <table th:unless="${klijenti.isEmpty()}">
+                    <thead>
+                    <tr>
+                        <th>Ime</th>
+                        <th>Tip</th>
+                        <th>OIB</th>
+                        <th>Mjesto</th>
+                        <th>Email</th>
+                        <th>Telefon</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="klijent : ${klijenti}"
+                        class="red-klijenta"
+                        th:onclick="'window.location=\'' + @{/klijenti/{id}(id=${klijent.id})} + '\''">
+                        <td class="ime-klijenta" th:text="${klijent.naziv}">Ime klijenta ide ovdje</td>
+                        <td th:text="${klijent.tip}">Tip klijenta ide ovdje</td>
+                        <td th:text="${klijent.oib}">OIB ide ovdje</td>
+                        <td th:text="${klijent.mjesto}">Mjesto ide ovdje</td>
+                        <td th:text="${klijent.email}">Email ide ovdje</td>
+                        <td th:text="${klijent.telefon}">Telefon ide ovdje</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script th:inline="javascript">
+    (function () {
+        var forma = document.getElementById('forma-filtera');
+        var rezultati = document.getElementById('rezultati-klijenata');
+        var gumbFilteri = document.getElementById('gumb-filteri');
+        var panelFiltera = document.getElementById('panel-filtera');
+        var urlZaPretragu = /*[[@{/klijenti/rezultati}]]*/ '/klijenti/rezultati';
+        var vrijemeCekanja = null;
+
+        function panelImaAktivneVrijednosti() {
+            var podaci = new FormData(forma);
+            return !!podaci.get('datumOd') || !!podaci.get('datumDo')
+                || podaci.get('sortiranje') !== 'naziv_asc';
+        }
+
+        function otvoriPanel() {
+            panelFiltera.classList.add('otvoren');
+            gumbFilteri.classList.add('aktivan');
+        }
+
+        function zatvoriPanel() {
+            panelFiltera.classList.remove('otvoren');
+            gumbFilteri.classList.remove('aktivan');
+        }
+
+        if (panelImaAktivneVrijednosti()) {
+            otvoriPanel();
+        }
+
+        gumbFilteri.addEventListener('click', function () {
+            if (panelFiltera.classList.contains('otvoren')) {
+                zatvoriPanel();
+            } else {
+                otvoriPanel();
+            }
+        });
+
+        function ucitajRezultate() {
+            var parametri = new URLSearchParams(new FormData(forma));
+
+            fetch(urlZaPretragu + '?' + parametri.toString())
+                .then(function (odgovor) { return odgovor.text(); })
+                .then(function (html) {
+                    rezultati.outerHTML = html;
+                    rezultati = document.getElementById('rezultati-klijenata');
+                    history.replaceState(null, '', '/klijenti?' + parametri.toString());
+                });
+        }
+
+        forma.addEventListener('input', function () {
+            clearTimeout(vrijemeCekanja);
+            vrijemeCekanja = setTimeout(ucitajRezultate, 300);
+        });
+
+        forma.addEventListener('change', function () {
+            clearTimeout(vrijemeCekanja);
+            ucitajRezultate();
+        });
+
+        forma.addEventListener('submit', function (dogadaj) {
+            dogadaj.preventDefault();
+            clearTimeout(vrijemeCekanja);
+            ucitajRezultate();
+        });
+    })();
+</script>
 </body>
 </html>

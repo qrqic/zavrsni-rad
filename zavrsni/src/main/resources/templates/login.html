@@ -3,33 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Prijava</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="stranica">
+    <main>
+        <div class="kartica">
+            <h1>Prijava</h1>
 
-    <h1>Prijava</h1>
+            <p class="poruka greska" th:if="${param.error}">Pogresan email ili lozinka.</p>
+            <p class="poruka uspjeh" th:if="${param.logout}">Uspjesno si se odjavio/la.</p>
+            <p class="poruka greska" th:if="${param['sesija-istekla']}">Tvoja sesija vise nije vazeca, prijavi se ponovno.</p>
 
-    <p th:if="${param.error}" style="color: red;">Pogresan email ili lozinka.</p>
-    <p th:if="${param.logout}" style="color: green;">Uspjesno si se odjavio/la.</p>
+            <form method="post" th:action="@{/login}">
 
-    <form method="post" th:action="@{/login}">
+                <label class="polje">
+                    <span>Email</span>
+                    <input type="email" name="username" required>
+                </label>
 
-        <label>
-            Email:
-            <input type="email" name="username" required>
-        </label>
-        <br>
+                <label class="polje">
+                    <span>Lozinka</span>
+                    <input type="password" name="password" required>
+                </label>
 
-        <label>
-            Lozinka:
-            <input type="password" name="password" required>
-        </label>
-        <br>
+                <button type="submit" class="gumb">Prijavi se</button>
+            </form>
 
-        <button type="submit">Prijavi se</button>
-    </form>
-
-    <br>
-    <a href="/registracija">Nemas racun? Registriraj se</a>
-
+            <a class="poveznica" href="/registracija">Nemas racun? Registriraj se</a>
+        </div>
+    </main>
+</div>
 </body>
 </html>

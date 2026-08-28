@@ -3,42 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <title>Registracija</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="stranica">
+    <main>
+        <div class="kartica">
+            <h1>Registracija novog korisnika</h1>
 
-    <h1>Registracija novog korisnika</h1>
+            <form method="post" th:action="@{/registracija}">
 
-    <form method="post" th:action="@{/registracija}">
+                <h2>Podaci o korisniku</h2>
 
-        <label>
-            Ime:
-            <input type="text" name="ime" required>
-        </label>
-        <br>
+                <label class="polje">
+                    <span>Ime</span>
+                    <input type="text" name="ime" required>
+                </label>
 
-        <label>
-            Prezime:
-            <input type="text" name="prezime" required>
-        </label>
-        <br>
+                <label class="polje">
+                    <span>Prezime</span>
+                    <input type="text" name="prezime" required>
+                </label>
 
-        <label>
-            Email:
-            <input type="email" name="email" required>
-        </label>
-        <br>
+                <label class="polje">
+                    <span>Email</span>
+                    <input type="email" name="email" required>
+                </label>
 
-        <label>
-            Lozinka:
-            <input type="password" name="lozinka" required>
-        </label>
-        <br>
+                <label class="polje">
+                    <span>Lozinka</span>
+                    <input type="password" name="lozinka" minlength="6" required>
+                </label>
 
-        <button type="submit">Registriraj se</button>
-    </form>
+                <h2>Podaci o tvrtki</h2>
 
-    <br>
-    <a href="/login">Vec imas racun? Prijavi se</a>
+                <label class="polje">
+                    <span>Naziv tvrtke</span>
+                    <input type="text" name="nazivTvrtke" required>
+                </label>
 
+                <label class="polje">
+                    <span>OIB tvrtke</span>
+                    <input type="text" name="oibTvrtke" pattern="\d{11}" title="OIB mora sadržavati točno 11 znamenki" required>
+                </label>
+
+                <label class="polje">
+                    <span>Mjesto</span>
+                    <input type="text" name="mjestoTvrtke" required>
+                </label>
+
+                <label class="polje">
+                    <span>Poštanski broj</span>
+                    <input type="text" name="postanskiBrojTvrtke" required>
+                </label>
+
+                <label class="polje">
+                    <span>IBAN</span>
+                    <input type="text" name="iban" pattern="HR\d{19}" placeholder="HR1234567890123456789"
+                           title="IBAN mora biti u hrvatskom formatu (HR + 19 znamenki)" required>
+                </label>
+
+                <label class="polje-checkbox" style="margin-bottom: 20px;">
+                    <input type="checkbox" name="pdvSustav" value="true">
+                    U sustavu PDV-a
+                </label>
+
+                <button type="submit" class="gumb">Registriraj se</button>
+            </form>
+
+            <a class="poveznica" href="/login">Vec imas racun? Prijavi se</a>
+        </div>
+    </main>
+</div>
 </body>
 </html>

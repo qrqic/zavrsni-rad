@@ -3,31 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <title>Novi klijent</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="stranica">
+    <main>
+        <div class="kartica">
+            <h1>Dodaj novog klijenta</h1>
 
-    <h1>Dodaj novog klijenta</h1>
+            <!-- th:action (umjesto obicnog action) je bitan otkad imamo Spring Security -
+                 on automatski ubaci skriveni CSRF token u formu, bez njega bi POST pao s 403 -->
+            <form method="post" th:action="@{/klijenti}">
 
-    <!-- th:action (umjesto obicnog action) je bitan otkad imamo Spring Security -
-         on automatski ubaci skriveni CSRF token u formu, bez njega bi POST pao s 403 -->
-    <form method="post" th:action="@{/klijenti}">
+                <label class="polje">
+                    <span>Tip</span>
+                    <select name="tip" required>
+                        <option value="FIZICKA_OSOBA">Fizička osoba</option>
+                        <option value="PRAVNA_OSOBA">Pravna osoba</option>
+                    </select>
+                </label>
 
-        <label>
-            Naziv:
-            <input type="text" name="naziv" required>
-        </label>
-        <br>
+                <label class="polje">
+                    <span>Naziv</span>
+                    <input type="text" name="naziv" required>
+                </label>
 
-        <label>
-            Email:
-            <input type="email" name="email" required>
-        </label>
-        <br>
-        <button type="submit">Spremi</button>
-    </form>
+                <label class="polje">
+                    <span>OIB</span>
+                    <input type="text" name="oib" pattern="\d{11}" title="OIB mora sadržavati točno 11 znamenki" required>
+                </label>
 
-    <br>
-    <a href="/klijenti">Nazad na popis</a>
+                <label class="polje">
+                    <span>Adresa</span>
+                    <input type="text" name="adresa" required>
+                </label>
 
+                <label class="polje">
+                    <span>Mjesto</span>
+                    <input type="text" name="mjesto" required>
+                </label>
+
+                <label class="polje">
+                    <span>Poštanski broj</span>
+                    <input type="text" name="postanskiBroj" required>
+                </label>
+
+                <label class="polje">
+                    <span>Email</span>
+                    <input type="email" name="email" required>
+                </label>
+
+                <label class="polje">
+                    <span>Telefon</span>
+                    <input type="text" name="telefon" required>
+                </label>
+
+                <label class="polje">
+                    <span>Napomena</span>
+                    <textarea name="napomena"></textarea>
+                </label>
+
+                <button type="submit" class="gumb">Spremi</button>
+            </form>
+
+            <a class="poveznica" href="/klijenti">Nazad na popis</a>
+        </div>
+    </main>
+</div>
 </body>
 </html>

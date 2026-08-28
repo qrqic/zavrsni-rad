@@ -8,9 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-// UserDetailsService je "prevoditelj" izmedu naseg Korisnik entiteta i onoga
-// sto Spring Security zna citati (UserDetails). Kad se netko pokusa prijaviti,
-// Spring Security sam pozove loadUserByUsername(email) i usporedi lozinku.
 @Service
 public class KorisnikDetailsService implements UserDetailsService {
 
@@ -26,14 +23,11 @@ public class KorisnikDetailsService implements UserDetailsService {
         Korisnik korisnik = korisnikRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Korisnik s emailom " + email + " ne postoji"));
 
-        // User.builder() gradi Spring Securityjev standardni UserDetails objekt.
-        // .password() ocekuje vec HASHIRANU lozinku (onu koju smo spremili u bazu) -
-        // Spring Security sam usporeduje uneseni tekst s hashem, mi to ne radimo rucno.
-        // .roles("USER") je obavezno bar jedna "uloga" da autentifikacija prode.
         return User.builder()
                 .username(korisnik.getEmail())
                 .password(korisnik.getLozinka())
-                .roles("USER")
+                .roles(korisnik.getUloga().name())
+                .disabled(!korisnik.isAktivan())
                 .build();
     }
 }

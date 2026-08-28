@@ -3,30 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Uredi klijenta</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div class="stranica">
+    <main>
+        <div class="kartica">
+            <h1>Uredi klijenta</h1>
 
-    <h1>Uredi klijenta</h1>
+            <form method="post" th:action="@{/klijenti/{id}(id=${klijent.id})}">
 
-    <form method="post" th:action="@{/klijenti/{id}(id=${klijent.id})}">
+                <label class="polje">
+                    <span>Tip</span>
+                    <select name="tip" required>
+                        <option value="FIZICKA_OSOBA" th:selected="${klijent.tip.name() == 'FIZICKA_OSOBA'}">Fizička osoba</option>
+                        <option value="PRAVNA_OSOBA" th:selected="${klijent.tip.name() == 'PRAVNA_OSOBA'}">Pravna osoba</option>
+                    </select>
+                </label>
 
-        <label>
-            Naziv:
-            <input type="text" name="naziv" th:value="${klijent.naziv}" required>
-        </label>
-        <br>
+                <label class="polje">
+                    <span>Naziv</span>
+                    <input type="text" name="naziv" th:value="${klijent.naziv}" required>
+                </label>
 
-        <label>
-            Email:
-            <input type="email" name="email" th:value="${klijent.email}" required>
-        </label>
-        <br>
+                <label class="polje">
+                    <span>OIB</span>
+                    <input type="text" name="oib" th:value="${klijent.oib}" pattern="\d{11}" title="OIB mora sadržavati točno 11 znamenki" required>
+                </label>
 
-        <button type="submit">Spremi izmjene</button>
-    </form>
+                <label class="polje">
+                    <span>Adresa</span>
+                    <input type="text" name="adresa" th:value="${klijent.adresa}" required>
+                </label>
 
-    <br>
-    <a href="/klijenti">Nazad na popis</a>
+                <label class="polje">
+                    <span>Mjesto</span>
+                    <input type="text" name="mjesto" th:value="${klijent.mjesto}" required>
+                </label>
 
+                <label class="polje">
+                    <span>Poštanski broj</span>
+                    <input type="text" name="postanskiBroj" th:value="${klijent.postanskiBroj}" required>
+                </label>
+
+                <label class="polje">
+                    <span>Email</span>
+                    <input type="email" name="email" th:value="${klijent.email}" required>
+                </label>
+
+                <label class="polje">
+                    <span>Telefon</span>
+                    <input type="text" name="telefon" th:value="${klijent.telefon}" required>
+                </label>
+
+                <label class="polje">
+                    <span>Napomena</span>
+                    <textarea name="napomena" th:text="${klijent.napomena}"></textarea>
+                </label>
+
+                <button type="submit" class="gumb">Spremi izmjene</button>
+            </form>
+
+            <a class="poveznica" th:href="@{/klijenti/{id}(id=${klijent.id})}">Odustani, natrag na pregled</a>
+        </div>
+    </main>
+</div>
 </body>
 </html>
